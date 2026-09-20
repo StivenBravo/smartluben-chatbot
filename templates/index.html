@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LubenBot - SmartLuben</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #f4f5f7;
+
+            height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+        .chat-container {
+
+            width: 900px;
+
+            max-width: 95%;
+
+            height: 650px;
+
+            background: white;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0,0,0,0.15);
+
+            display: flex;
+
+            flex-direction: column;
+
+            overflow: hidden;
+        }
+
+        .header {
+
+            background:
+                #7c1c2b;
+
+            color: white;
+
+            padding: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+        }
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 22px;
+        }
+
+        .header span {
+
+            font-size: 13px;
+
+            opacity: 0.8;
+        }
+
+        .messages {
+
+            flex: 1;
+
+            padding: 25px;
+
+            overflow-y: auto;
+
+            background:
+                #fafafa;
+        }
+
+        .message {
+
+            max-width: 75%;
+
+            padding:
+                13px 17px;
+
+            border-radius:
+                15px;
+
+            margin-bottom:
+                15px;
+
+            line-height:
+                1.45;
+
+            white-space:
+                pre-wrap;
+        }
+
+        .bot {
+
+            background:
+                #ececec;
+
+            align-self:
+                flex-start;
+        }
+
+        .user {
+
+            background:
+                #7c1c2b;
+
+            color: white;
+
+            margin-left: auto;
+        }
+
+        .input-area {
+
+            display: flex;
+
+            padding: 15px;
+
+            border-top:
+                1px solid #ddd;
+
+            background:
+                white;
+        }
+
+        input {
+
+            flex: 1;
+
+            padding:
+                14px 17px;
+
+            border:
+                1px solid #ccc;
+
+            border-radius:
+                8px;
+
+            font-size:
+                15px;
+
+            outline:
+                none;
+        }
+
+        input:focus {
+
+            border-color:
+                #7c1c2b;
+        }
+
+        button {
+
+            margin-left:
+                10px;
+
+            padding:
+                14px 25px;
+
+            background:
+                #7c1c2b;
+
+            color:
+                white;
+
+            border:
+                none;
+
+            border-radius:
+                8px;
+
+            cursor:
+                pointer;
+
+            font-size:
+                15px;
+        }
+
+        button:hover {
+
+            background:
+                #951f33;
+        }
+
+        button:disabled {
+
+            background:
+                #999;
+
+            cursor:
+                not-allowed;
+        }
+
+        .status {
+
+            font-size:
+                12px;
+
+            color:
+                #777;
+
+            margin-bottom:
+                10px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="chat-container">
+
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                LubenBot
+            </h1>
+
+            <span>
+                Asistente inteligente de SmartLuben
+            </span>
+
+        </div>
+
+        <div>
+            ● En línea
+        </div>
+
+    </div>
+
+
+    <div
+        id="messages"
+        class="messages"
+    >
+
+        <div class="message bot">
+
+            Hola, soy LubenBot.
+
+            Puedo ayudarte a consultar productos,
+            espacios y recomendaciones de reposición
+            de SmartLuben.
+
+        </div>
+
+    </div>
+
+
+    <div class="input-area">
+
+        <input
+            id="messageInput"
+            type="text"
+            placeholder="Escribe una consulta..."
+            autocomplete="off"
+        >
+
+        <button
+            id="sendButton"
+            onclick="sendMessage()"
+        >
+            Enviar
+        </button>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    input.addEventListener(
+        "keypress",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+
+    function addMessage(
+        text,
+        type
+    ) {
+
+        const messages =
+            document.getElementById(
+                "messages"
+            );
+
+
+        const message =
+            document.createElement(
+                "div"
+            );
+
+
+        message.classList.add(
+            "message",
+            type
+        );
+
+
+        message.textContent =
+            text;
+
+
+        messages.appendChild(
+            message
+        );
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+    }
+
+
+    async function sendMessage() {
+
+        const input =
+            document.getElementById(
+                "messageInput"
+            );
+
+
+        const button =
+            document.getElementById(
+                "sendButton"
+            );
+
+
+        const message =
+            input.value.trim();
+
+
+        if (!message) {
+            return;
+        }
+
+
+        addMessage(
+            message,
+            "user"
+        );
+
+
+        input.value = "";
+
+        button.disabled = true;
+
+        button.textContent =
+            "Pensando...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/chat",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+                                message:
+                                    message
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    "Error del servidor"
+                );
+
+            }
+
+
+            addMessage(
+                data.response,
+                "bot"
+            );
+
+
+        }
+        catch (error) {
+
+            addMessage(
+                "No pude procesar la consulta. Revisa la conexión con DeepSeek.",
+                "bot"
+            );
+
+            console.error(
+                error
+            );
+
+        }
+        finally {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Enviar";
+
+            input.focus();
+
+        }
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+{
+  "contexto": {
+    "empresa": "Confitería Luben",
+    "sistema": "SmartLuben",
+    "dia": "Sábado",
+    "hora": "16:00"
+  },
+
+  "espacios": [
+    {
+      "id": "E01",
+      "producto_id": "P001",
+      "producto": "Cheesecake de Fresa",
+      "categoria": "Postres",
+      "estado": "ocupado",
+      "requiere_reposicion": false,
+      "cantidad_actual": 5,
+      "cantidad_recomendada": 0,
+      "frecuencia_reposicion": "media"
+    },
+
+    {
+      "id": "E02",
+      "producto_id": "P002",
+      "producto": "Red Velvet",
+      "categoria": "Tortas",
+      "estado": "ocupado",
+      "requiere_reposicion": false,
+      "cantidad_actual": 4,
+      "cantidad_recomendada": 0,
+      "frecuencia_reposicion": "baja"
+    },
+
+    {
+      "id": "E03",
+      "producto_id": "P003",
+      "producto": "Empanada de Pollo",
+      "categoria": "Salados",
+      "estado": "vacio",
+      "requiere_reposicion": true,
+      "cantidad_actual": 0,
+      "cantidad_recomendada": 6,
+      "frecuencia_reposicion": "alta"
+    },
+
+    {
+      "id": "E04",
+      "producto_id": "P004",
+      "producto": "Carrot Cake",
+      "categoria": "Tortas",
+      "estado": "ocupado",
+      "requiere_reposicion": false,
+      "cantidad_actual": 3,
+      "cantidad_recomendada": 0,
+      "frecuencia_reposicion": "media"
+    },
+
+    {
+      "id": "E05",
+      "producto_id": "P005",
+      "producto": "Croissant de Jamón y Queso",
+      "categoria": "Salados",
+      "estado": "parcial",
+      "requiere_reposicion": true,
+      "cantidad_actual": 1,
+      "cantidad_recomendada": 3,
+      "frecuencia_reposicion": "media"
+    },
+
+    {
+      "id": "E06",
+      "producto_id": "P006",
+      "producto": "Milhojas",
+      "categoria": "Postres",
+      "estado": "ocupado",
+      "requiere_reposicion": false,
+      "cantidad_actual": 5,
+      "cantidad_recomendada": 0,
+      "frecuencia_reposicion": "media"
+    },
+
+    {
+      "id": "E07",
+      "producto_id": "P007",
+      "producto": "Tartaleta de Fresa",
+      "categoria": "Postres",
+      "estado": "vacio",
+      "requiere_reposicion": true,
+      "cantidad_actual": 0,
+      "cantidad_recomendada": 4,
+      "frecuencia_reposicion": "alta"
+    }
+  ],
+
+  "reposiciones": [
+    {
+      "espacio": "E03",
+      "producto": "Empanada de Pollo",
+      "cantidad": 6,
+      "prioridad": "alta",
+      "motivo": "El espacio se encuentra vacío y presenta alta frecuencia de reposición."
+    },
+
+    {
+      "espacio": "E05",
+      "producto": "Croissant de Jamón y Queso",
+      "cantidad": 3,
+      "prioridad": "media",
+      "motivo": "El espacio se encuentra parcialmente abastecido."
+    },
+
+    {
+      "espacio": "E07",
+      "producto": "Tartaleta de Fresa",
+      "cantidad": 4,
+      "prioridad": "alta",
+      "motivo": "El espacio se encuentra vacío."
+    }
+  ]
+}
