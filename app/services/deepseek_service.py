@@ -9,11 +9,16 @@ from app.config import (
     DEEPSEEK_MODEL,
 )
 
+from app.services.core_service import (
+    obtener_productos,
+    obtener_espacios,
+    obtener_movimientos,
+    obtener_resumen,
+)
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 PROMPT_PATH = BASE_DIR / "prompts" / "system_prompt.txt"
-DATA_PATH = BASE_DIR / "data" / "mock_data.json"
 
 
 def cargar_prompt():
@@ -25,15 +30,6 @@ def cargar_prompt():
         return archivo.read()
 
 
-def cargar_datos():
-    with open(
-        DATA_PATH,
-        "r",
-        encoding="utf-8"
-    ) as archivo:
-        return json.load(archivo)
-
-
 async def consultar_deepseek(message: str):
 
     if not DEEPSEEK_API_KEY:
@@ -41,23 +37,41 @@ async def consultar_deepseek(message: str):
             "No se encontró DEEPSEEK_API_KEY en el archivo .env"
         )
 
+    # 1. Cargar prompt del sistema
     system_prompt = cargar_prompt()
-    datos = cargar_datos()
 
+    # 2. Consultar datos reales desde el Core de SmartLuben
+    productos = await obtener_productos()
+    espacios = await obtener_espacios()
+    movimientos = await obtener_movimientos()
+    resumen = await obtener_resumen()
+
+    # 3. Agrupar datos del Core
+    datos = {
+        "productos": productos,
+        "espacios": espacios,
+        "movimientos": movimientos,
+        "resumen": resumen,
+    }
+
+    # 4. Convertir datos a JSON para enviarlos como contexto
     contexto = json.dumps(
         datos,
         ensure_ascii=False,
-        indent=2
+        indent=2,
+        default=str
     )
 
+    # 5. Construir el contexto completo para DeepSeek
     mensaje_sistema = f"""
 {system_prompt}
 
-DATOS ACTUALES DE SMARTLUBEN:
+DATOS ACTUALES DEL SISTEMA SMARTLUBEN:
 
 {contexto}
 """
 
+    # 6. Preparar payload para DeepSeek
     payload = {
         "model": DEEPSEEK_MODEL,
         "messages": [
@@ -74,12 +88,15 @@ DATOS ACTUALES DE SMARTLUBEN:
         "max_tokens": 500
     }
 
+    # 7. Cabeceras de autenticación
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
         "Content-Type": "application/json"
     }
 
+    # 8. Preparar URL de DeepSeek
     base_url = DEEPSEEK_BASE_URL.strip().rstrip("/")
+
     if not base_url.startswith(("http://", "https://")):
         base_url = f"https://{base_url}"
 
@@ -87,6 +104,7 @@ DATOS ACTUALES DE SMARTLUBEN:
 
     print("URL DeepSeek:", url)
 
+    # 9. Enviar consulta a DeepSeek
     async with httpx.AsyncClient(timeout=30.0) as client:
 
         response = await client.post(
@@ -99,4 +117,12 @@ DATOS ACTUALES DE SMARTLUBEN:
 
         data = response.json()
 
-        return data["choices"][0]["message"]["content"]
+        # 10. Devolver respuesta generada
+        respuesta = data["choices"][0]["message"]["content"]
+        respuesta = (
+            respuesta
+            .replace("**", "")
+            .replace("```", "")
+        )
+
+        return respuesta.strip()
